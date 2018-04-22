@@ -22,7 +22,12 @@ namespace EmailService
         {
             services.AddMvc();
             services.AddScoped<IEmailService, EmailingService>();
-            services.AddScoped<IEmailClient>(provider => new EmailClient(1, 10));
+            int maxconnections;
+            if(!int.TryParse(Configuration.GetValue<string>("MaxConnections"),out maxconnections))
+            {
+                maxconnections = 100;
+            }
+            services.AddScoped<IEmailClient>(provider => new EmailClient(maxconnections, 10));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
